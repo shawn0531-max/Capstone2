@@ -1,0 +1,20 @@
+.user-info{
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.label-user-info{
+    margin-right: 5px;
+}
+
+.list-div{
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.user-div{
+    display: inline-block;
+    vertical-align: top;
+}
+
