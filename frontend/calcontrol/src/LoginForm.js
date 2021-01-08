@@ -38,7 +38,7 @@ const LoginForm = () => {
         sessionStorage.setItem('token', token.data.token);
         let user = jwt.decode(token.data.token);
         let name = user.username;
-        history.push(`/user/${name}/checkin`);
+        history.push(`/user/${name}/profile`);
     };
 
   return (

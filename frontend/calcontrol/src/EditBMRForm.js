@@ -11,11 +11,11 @@ import NavBar from './NavBar';
 
 const DBAPI = 'http://localhost:5000'
 
-const BMRForm = () => {
+const EditBMRForm = () => {
 
     // set empty initial state for the form, sets up useHistory
-    const INITIAL_STATE = {curr_weight:"", weight_unit: "kg", curr_height:"", height_unit: "cm",
-                           curr_age:"", curr_activity: "", curr_goal: "", curr_experience: "", gender: ""};
+    const INITIAL_STATE = {curr_height:"", curr_age:"", curr_activity: "", curr_goal: "",
+                           curr_experience: "", gender: ""};
     const [formData, setFormData] = useState(INITIAL_STATE);
     const [activeModal, setActiveModal] = useState(false);
     const [BMRModal, setBMRModal] = useState(false);
@@ -58,21 +58,17 @@ const BMRForm = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
 
-        let weight;
         let height;
 
         if (unit === 'standard'){
-            weight = Math.round(formData.curr_weight * 0.453592 * 2) / 2
             height = Math.round(formData.curr_height * 2.54 * 2) / 2
         }
 
-        if(formData.curr_weight === ""){
-            alert('Please enter a weight')
-        } else if(formData.curr_height === ""){
+        if(formData.curr_height === ""){
             alert("Please enter a height")
         } else {
             await axios.patch(`${DBAPI}/user/${username}/BMR`,{
-                "curr_weight": weight || Math.round(parseFloat(formData.curr_weight * 2)) / 2,
+                "curr_weight": user.curr_weight,
                 "curr_height": height || Math.round(parseFloat(formData.curr_height * 2)) / 2,
                 "curr_age": formData.curr_age || user.curr_age,
                 "curr_activity": formData.curr_activity || user.curr_activity,
@@ -103,8 +99,8 @@ const BMRForm = () => {
             <FormGroup>
                 <Label htmlFor="curr_weight">Weight</Label>
                 <InputGroup>
-                <Input autoFocus={true} type="text" name="curr_weight" id="curr_weight" onChange={handleChange} 
-                placeholder={user.curr_weight !== '0' ? user.curr_weight : 100} value={formData.curr_weight}/>
+                <Input disabled={true} autoFocus={true} type="text" name="curr_weight" id="curr_weight" onChange={handleChange} 
+                placeholder={user.curr_weight !== '0' ? user.curr_weight : 100}/>
                     <InputGroupAddon name="weight_unit" id="weight_unit" addonType='append'>
                         <InputGroupText>
                             {unit === 'metric' ? "kg" : "lb"}
@@ -219,4 +215,4 @@ const BMRForm = () => {
   );
 }
 
-export default BMRForm;
+export default EditBMRForm;

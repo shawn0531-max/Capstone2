@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { getChartInfo } from './actions';
+import { getChartInfo, getUserInfo, getWeightInfo, getRecommendations, 
+         updateCheckDate, updateRecommends, updateBiweekWeight } from './actions';
+import { twoWeeksCheck } from './helpers/twoWeeksCheck';
+import { calChangeCheck } from './helpers/calChangeCheck';
+import { changeCalLogic } from './helpers/changeCalLogic';
+import { calUpdateCalc } from './helpers/calUpdateCalc';
 import NavBar from './NavBar';
 import TrackingChart from './TrackingChart';
 import { Input, InputGroup, Label } from 'reactstrap';
@@ -13,20 +18,91 @@ const Profile = () =>{
     let yearToday = dateToday.getFullYear();
     let monthToday = dateToday.getMonth() + 1;
     
-    
+    const history = useHistory();
     const dispatch = useDispatch();
     const {username} = useParams();
     const [dateInfo, setDateInfo] = useState({monthNum: monthToday, 'year': yearToday});
 
     useEffect(()=> {
 
+        dispatch(getUserInfo(username));
         dispatch(getChartInfo(username, dateInfo.monthNum, dateInfo.year));
-    
+        dispatch(getRecommendations(username));
     }, [dispatch, username, dateInfo])
 
     let weightsArr = [];
     let calsArr = [];
-    let info = useSelector(store => store.info)
+    let info = useSelector(store => store.info);
+    let {user} = useSelector(store => store.user);
+    let recommends = useSelector(store => store.recommendations);
+
+    const getWeights = async(startDate, endDate) =>{
+        let weights = await getWeightInfo(username, startDate, endDate);
+        return weights;
+    }
+    
+    let weightResp;
+    let weeklyWeightChange;
+    let newCalTotal;
+    let newWeight;
+
+    if(user.biweek_check_date){
+        let check = twoWeeksCheck(user.biweek_check_date, dateToday)
+        if (check){
+            setTimeout(async()=>{
+                weightResp = await getWeights(check[1], check[0]);
+                if(weightResp){
+                    weeklyWeightChange = calChangeCheck(weightResp);
+                    let cal = changeCalLogic(calChangeCheck(weightResp), user.curr_goal);
+                    if(cal === 'BMRL'){
+                        let today = Date();
+                        today = today.slice(4,15);
+                        setTimeout( async()=>{
+                            let resp = await updateCheckDate(username, today);
+                            history.push(`/user/${username}/infoBMR/${cal}`);
+                        },0)
+                    } else if(cal === 'BMRG'){
+                        let today = Date();
+                        today = today.slice(4,15);
+                        setTimeout( async()=>{
+                            let resp = await updateCheckDate(username, today);
+                            history.push(`/user/${username}/infoBMR/${cal}`);
+                        },0)
+                    } else if(cal === 'BMRM'){
+                        let today = Date();
+                        today = today.slice(4,15);
+                        setTimeout( async()=>{
+                            let resp = await updateCheckDate(username, today);
+                            history.push(`/user/${username}/infoBMR/${cal}`);
+                        },0)
+                    } else {
+                        if(recommends.cals){
+                            newCalTotal = parseFloat(recommends.cals) + cal;    
+                            newWeight = parseFloat(user.curr_weight) + (weeklyWeightChange * 2);
+
+                            let newMacros = calUpdateCalc(user.curr_goal, newCalTotal, newWeight);
+    
+                            setTimeout(async()=>{
+                                let updateRecs = await updateRecommends(username, [newCalTotal, newMacros]);
+                                if(updateRecs.data){
+                                    let weightCheck = await updateBiweekWeight(username, newWeight);
+                                    if(weightCheck.data){
+                                        let thisDay = Date();
+                                        thisDay = thisDay.slice(4,15);
+                                        let resp = await updateCheckDate(username, thisDay);
+                                        if(resp.biweek_check_date){
+                                            alert(`Recommended calories are updated every two weeks upon log in based on your weight change and goals. This time your new goals are ${newCalTotal} calories, ${newMacros.protein}g protein, ${newMacros.carbs}g carbs, ${newMacros.fats}g fat`)
+                                        }
+                                    }
+                                }
+                            }, 0)
+                        }
+                    }
+                }
+                
+            }, 0);
+        }
+    }
     
    if(!info.info){
         for(let i = 0; i < info[0][0].length; i++){
@@ -52,6 +128,35 @@ const Profile = () =>{
         <NavBar />
         <div>
             <h1>Profile</h1>
+            <div>
+                { user.username ?
+            <>
+                    <Label className='label-user-info' htmlFor='username'>Username:</Label>
+                    <p className='user-info' name='username'>{user.username}</p>
+                    <Label className='label-user-info' htmlFor='date'>Joined on:</Label>
+                    <p className='user-info' name='date'>{user.date_joined.slice(5,10)+ '-' +user.date_joined.slice(0,4)}</p>
+                    <br/>
+                    <Label className='label-user-info' htmlFor='height'>Height:</Label>
+                    <p className='user-info' name='height'>{user.curr_height}</p>
+                    <Label className='label-user-info' htmlFor='weight'>Weight:</Label>
+                    <p className='user-info' name='weight'>{user.curr_weight}</p>
+                    <Label className='label-user-info' htmlFor='age'>Age:</Label>
+                    <p className='user-info' name='age'>{user.curr_age}</p>
+                    <br/>
+                    <Label className='label-user-info' htmlFor='activity'>Activity:</Label>
+                    <p className='user-info' name='activity'>{user.curr_activity}</p>
+                    <Label className='label-user-info' htmlFor='goal'>Goal:</Label>
+                    <p className='user-info' name='goal'>{user.curr_goal}</p>
+                    <Label className='label-user-info' htmlFor='experience'>Experience:</Label>
+                    <p className='user-info' name='experience'>{user.curr_experience}</p>
+                    <Link to={`/user/${username}/editBMR`} >Edit Profile</Link>
+                    {/* <Link to={`/user/${username}/prevfoods`} >Edit Old Foods</Link> */}
+                    <Link to={`/user/${username}/editinfo`}>Change Password/Email</Link>
+                    </>
+                    :
+                    null}
+            </div>
+
             <InputGroup>
             <Label htmlFor='monthNum'>Month</Label>
             <Input type='select' name='monthNum' id='monthNum' onChange={handleChange} value={dateInfo.monthNum}>

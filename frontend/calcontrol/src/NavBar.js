@@ -42,9 +42,9 @@ const NavBar = () => {
 
     if(logout){
       dispatch(userLogout());
+      history.push('/');
     }
 
-    history.push('/');
   }
 
   return (
@@ -60,7 +60,7 @@ const NavBar = () => {
               <NavLink href={`/user/${username}/profile`}>Profile</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="">Favorite Items</NavLink>
+              <NavLink href={`/user/${username}/favorites`}>Favorite Items</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href={`/user/${username}/checkin`}>Check In</NavLink>
