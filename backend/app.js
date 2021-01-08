@@ -3,6 +3,8 @@
 const express = require("express");
 const usersRoutes = require("./routes/users");
 const weightsRoutes = require("./routes/weights");
+const recommendRoutes = require('./routes/recommendations');
+const foodRoutes = require('./routes/foods');
 const cors = require('cors');
 const app = express();
 
@@ -10,6 +12,8 @@ app.use(express.json());
 app.use(cors());
 app.use("/user", usersRoutes);
 app.use("/weights", weightsRoutes);
+app.use("/recommendations", recommendRoutes);
+app.use("/foods", foodRoutes);
 
 
 /** 404 Not Found handler. */

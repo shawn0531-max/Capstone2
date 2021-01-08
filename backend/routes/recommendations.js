@@ -27,4 +27,19 @@ router.get('/:username', async function(req, res, next){
     } catch (err) {
         return next(err);
     }
+});
+
+router.patch('/:username', async function(req, res, next){
+    try {
+        const {username} = req.params;
+        const {cals, protein, fats, carbs} = req.body;
+
+        let resp = await Recommendation.updateRecommendations(cals, protein, fats, carbs, username);
+
+        return res.json(resp);
+    } catch (err) {
+        return next(err)
+    }
 })
+
+module.exports = router;
