@@ -1,0 +1,28 @@
+.formSignup-div{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.formSignup{
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgb(207, 207, 207);
+    border-radius: 5%;
+    padding: 10px;
+}
+
+.itemform-signup-label{
+    color: rgb(207, 207, 207);
+    font-size: 25px;
+}
+
+.itemform-signup-btn{
+    font-size: 18px;
+}
+
+.formSignup-alert{
+    margin-top: 2em;
+    margin-left: auto;
+    margin-right: auto;
+}

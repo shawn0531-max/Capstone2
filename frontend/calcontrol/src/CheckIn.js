@@ -7,10 +7,12 @@ import axios from 'axios';
 import NavBar from './NavBar';
 import FoodCard from './FoodCard';
 import TodayFoodList from './TodayFoodList';
-import { Spinner, Progress, Badge, InputGroup, Input,
-         Button, InputGroupAddon , UncontrolledCollapse, Row} from 'reactstrap';
+import { Spinner, Progress, Badge, InputGroup, Input, Button, 
+         InputGroupAddon , UncontrolledCollapse, Row, Fade, Alert} from 'reactstrap';
 import './CheckIn.css';
 
+/** User's can visualize calorie/macros progress for the day through progress bars, add daily weigh in,
+ *  search for foods to add on the day, see foods included in the day, and submit calorie total for the day **/
 const CheckIn = () =>{
 
     const FoodAPI = 'https://api.calorieninjas.com/v1/nutrition';
@@ -22,6 +24,8 @@ const CheckIn = () =>{
     const [isSearching, setIsSearching] = useState(false);
     const [addingFood, setAddingFood] = useState(false);
     const [foods, setFoods] = useState(undefined);
+    const [seeFood, setSeeFood] = useState(false);
+    const [error, setError] = useState({'val': null, 'color': 'warning'});
 
     let totalCals = 0;
     let totalProtein = 0;
@@ -32,20 +36,24 @@ const CheckIn = () =>{
     date = date.slice(4,15);
 
     useEffect(()=> {
-        dispatch(getUserInfo(username));
-        // dispatch(getOldWeights(username, twoWeeksCalc()));
-        dispatch(getRecommendations(username));
-        dispatch(getDateFood(username, date));
-        dispatch(getDailyWeight(username));
-        dispatch(getDailyCals(username));
+        try {
+            dispatch(getUserInfo(username));
+            dispatch(getRecommendations(username));
+            dispatch(getDateFood(username, date));
+            dispatch(getDailyWeight(username));
+            dispatch(getDailyCals(username)); 
+        } catch (err) {
+            
+        }
     }, [dispatch, username, date])
 
     let {user} = useSelector(store => store.user);
-    let weights = useSelector(store => store.weights);
-    let cals = useSelector(store => store.cals);
+    let {weights} = useSelector(store => store.weights);
+    let {cals} = useSelector(store => store.cals);
     let recommendations = useSelector(store => store.recommendations);
     let foodToday = useSelector(store => store.foods);
 
+    /** Calculates calorie and macro totals for the day to set up progress bars **/
     if(foodToday.foods){
         for(let i = 0; i < foodToday.foods.length; i++){
             totalCals += parseFloat(foodToday.foods[i].cals);
@@ -70,12 +78,19 @@ const CheckIn = () =>{
         setSearch(value);
     }
 
+    /** Allows user to search food API CalorieNinjas, handles error if search returns nothing **/
     const handleSearch = async() =>{
         setIsSearching(true);
         let resp = await axios.get(`${FoodAPI}?query=${search}`,{
             headers: {'X-Api-Key': api_key}
         });
 
+        if(resp.data.items.length === 0){
+            setError({'val': 'Item not found. Please check spelling or use of spaces and try again', 'color': 'warning'})
+            setTimeout(()=>{
+                setError({'val': null, 'color': 'warning'});
+            }, 2000);
+        }
         if(resp.data.items){
             setFoods(resp.data.items)
             setIsSearching(false);
@@ -84,95 +99,116 @@ const CheckIn = () =>{
         setSearch("");
     }
 
-
+    /** Toggles the collapses on corresponding button click and allows only one open at a time **/
     const toggleAdd = () =>{
-        if(!addingFood){
-            setFoods(undefined);
-        }
         setAddingFood(!addingFood);
+        setSeeFood(false);
+    }
+
+    const toggleSee =() =>{
+        setSeeFood(!seeFood);
+        setAddingFood(false);
     }
 
     const handleWeightAdd = () =>{
         history.push(`/user/${username}/addweight`);
     }
 
+    /** Submits users total calories and recommended calories for the day **/
     const handleEndDay = async() =>{
-        let resp = await addDailyCals(username, totalCals, recommendations.cals);
+        let resp = await addDailyCals(username, parseFloat(totalCals), parseFloat(recommendations.cals));
 
         if(resp.data !== 'Already entered'){
-            alert(`${totalCals} calories have been added for ${date}`)
+            setError({'val': `${totalCals} calories have been added for ${date}`, 'color': 'success'});
+            setTimeout(()=>{
+                setError({'val': null, 'color': 'warning'});
+            }, 2000);
             cals = await getDailyCals(username);
+            window.location.reload();
         } else {
-            alert('You have already entered your calories for today.');
+            alert({'val': 'You have already entered your calories for today.', 'color': 'danger'});
+            setTimeout(()=>{
+                setError({'val': null, 'color': 'warning'});
+            }, 2000);
             cals = await getDailyCals(username);
         }
-    }
-
+    }    
+    
     return(
         <>
             <NavBar />
         { !user.username ?
             <>
-            <Spinner className="text-default">
+            <Spinner className="checkin-spinner">
             </Spinner>
             </>
             :
             <>
             <div>
                 <div className='user-div col-xs-12 col-md-8 col-xl-8'>
-                        <h4><b>Daily Goals</b></h4>
-                        <Row>
-                        <p className="macros">Calories: {totalCals ? totalCals : 0} of {recommendations.cals} <Badge color='success' pill={true}> </Badge></p>
-                        <p className="macros">Protein: {totalProtein ? totalProtein : 0} of {recommendations.protein} grams <Badge color='danger' pill={true}> </Badge></p>
-                        <p className="macros">Carbohydrates: {totalCarbs ? totalCarbs : 0} of {recommendations.carbs} grams <Badge color='primary' pill={true}> </Badge></p>
-                        <p className="macros">Fats: {totalFat ? totalFat : 0} of {recommendations.fat} grams <Badge color='warning' pill={true}> </Badge></p>
+                        <h1 className='checkin-title'><b>Daily Goals</b></h1>
+                        <Row className='checkin-label-row col-xs-12 col-md-12 col-lg-8 col-xl-8'>
+                        <p className="macros">Calories: {totalCals ? totalCals : 0} of {recommendations.cals} <Badge className='checkin-badge' color='success' pill={true}> </Badge></p>
+                        <p className="macros">Protein: {totalProtein ? totalProtein : 0} of {recommendations.protein} grams <Badge className='checkin-badge' color='danger' pill={true}> </Badge></p>
+                        </Row>
+                        <Row className='checkin-label-row col-xs-12 col-md-12 col-lg-9 col-xl-9'>
+                        <p className="macros">Carbohydrates: {totalCarbs ? totalCarbs : 0} of {recommendations.carbs} grams <Badge className='checkin-badge' color='primary' pill={true}> </Badge></p>
+                        <p className="macros">Fats: {totalFat ? totalFat : 0} of {recommendations.fat} grams <Badge className='checkin-badge' color='warning' pill={true}> </Badge></p>
                         </Row>
                     <br/>
-                    <div className='progress-div'>
+                    <div className='checkin-progress-div col-xs-12'>
                     <Progress multi>
                         <Progress bar color="danger" value={totalProtein/recommendations.protein} max={3}>{((totalProtein/recommendations.protein)*100).toFixed(1)} %</Progress>
                         <Progress bar color='primary' value={totalCarbs/recommendations.carbs} max={3}>{((totalCarbs/recommendations.carbs)*100).toFixed(1)} %</Progress>
                         <Progress bar color="warning" value={totalFat/recommendations.fat} max={3}>{((totalFat/recommendations.fat)*100).toFixed(1)} %</Progress>
                     </Progress>
                     
-                    <Progress bar color="success" value={totalCals/recommendations.cals} max={1}>{((totalCals/recommendations.cals)*100).toFixed(1)} %</Progress>
+                    <Progress className='checkin-cal-progress' bar color="success" value={totalCals/recommendations.cals} max={1}>{((totalCals/recommendations.cals)*100).toFixed(1)} %</Progress>
                     
                     </div>
                 </div>
             </div>
             <div>
-                <Button disabled={cals === null && minGoal > 0.65 ? false : true} onClick={handleEndDay} color="primary">
+                <Button className='checkin-btn' disabled={cals === undefined && minGoal > 0.65 ? false : true} onClick={handleEndDay} color="primary">
                 End Day
                 </Button>
-                <Button disabled={weights === null ? false : true} onClick={handleWeightAdd} color="primary">
+                <Button className='checkin-btn' disabled={weights === undefined ? false : true} onClick={handleWeightAdd} color="primary">
                 Daily Weigh In
                 </Button>
-                <Button color="primary" id="toggleragain">
+                <Button className='checkin-btn' color="primary" id="toggleragain" onClick={toggleSee}>
                 See Food
                 </Button>
-                <Button disabled={cals === null ? false : true} color="primary" id="toggler" onClick={toggleAdd}>
-                {addingFood ? "Done" : "Add food for today"}
+                <Button className='checkin-btn' disabled={cals === undefined ? false : true} color="primary" id="toggler" onClick={toggleAdd}>
+                {addingFood ? "Close Food Search" : "Add food for today"}
                 </Button>
-                <UncontrolledCollapse toggler="#toggleragain">
+                <UncontrolledCollapse className='checkin-foods col-xs-10 col-md-10' toggler='#toggleragain' isOpen={seeFood ? true : false}>
                     {foodToday.foods ? 
                     <TodayFoodList foods={foodToday.foods} cals={cals} />
                     :
                     null
                     }
                 </UncontrolledCollapse>
-                <UncontrolledCollapse toggler="#toggler">
-                    <InputGroup>
-                        <Input placeholder="Seach for food or drink" onChange={handleChange} value={search}/>
+                <UncontrolledCollapse className='checkin-search' toggler="#toggler" isOpen={addingFood ? true : false}>
+                    <InputGroup className='checkin-search-group col-xs-12 col-md-6 col-lg-4 col-xl-4'>
+                        <Input placeholder="Search for food or drink" onChange={handleChange} value={search}/>
                         <InputGroupAddon addonType="append"><Button onClick={handleSearch}>Click to search</Button></InputGroupAddon>
                     </InputGroup>
-            {
-                <>
+            
+                
                 {isSearching ? 
-                <Spinner className="text-default">
+                <Spinner className="checkin-spinner">
                 </Spinner>
                 :
-                <FoodCard foods={foods}/>}
-                </>
+                <FoodCard foods={foods}/>
+                }
+            
+            {
+                error.val === null ? null 
+                : 
+                <Fade in={error.val}>
+                    <Alert className='checkin-alert' color={error.color}>{error.val}</Alert>
+                </Fade>
+                
             }
                 </UncontrolledCollapse>
             </div>

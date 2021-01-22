@@ -1,0 +1,12 @@
+.foodcard-head{
+    color: rgb(207, 207, 207);
+    background-color: rgb(58, 58, 58);
+}
+
+.foodcard-body{
+    background-color: rgb(207, 207, 207);
+    color: rgb(58, 58, 58);
+    border: rgb(58, 58, 58) 2px solid;
+    border-bottom-left-radius: 2%;
+    border-bottom-right-radius: 2%;
+}

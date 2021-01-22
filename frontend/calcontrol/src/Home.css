@@ -1,0 +1,18 @@
+.homeWelcome {
+    color: rgb(207, 207, 207);
+    margin-top: 2em;
+    animation: flipOutX;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+}
+
+.homeTitle {
+    color: rgb(207, 207, 207);
+    font-weight: bold;
+    font-size: 72px;
+    animation: zoomInDown;
+    animation-duration: 2s;
+    animation-delay: 2s;
+    animation-fill-mode: backwards;
+}

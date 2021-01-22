@@ -1,0 +1,42 @@
+.editInfo-div{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.editInfo-title{
+    color: rgb(207, 207, 207);
+}
+
+.editInfo-row{
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+}
+
+.editInfo-label{
+    color: rgb(207, 207, 207);
+    font-size: 20px;
+}
+
+.editInfo-group{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.editInfo-submit-btn{
+    margin-top: 1em;
+    margin-right: 1em;
+    font-size: 20px;
+}
+
+.editInfo-cancel-btn{
+    margin-top: 1em;
+    margin-left: 1em;
+    font-size: 20px;
+}
+
+.editInfo-alert{
+    margin-top: 2em;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -7,7 +7,7 @@ export default function weightsReducer(state = INITIAL_STATE, action){
         case GETTWOWEEKSWEIGHTS:
             return {weights: action.entries};
         case DATEWEIGHT:
-            return action.id || null
+            return {weights: action.id} || {weights: undefined}
         default:
             return state;
     }

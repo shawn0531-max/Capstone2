@@ -1,0 +1,25 @@
+.favList-title{
+    margin-top: 1em;
+    color: rgb(207, 207, 207);
+}
+
+.favList-table{
+    margin-top: 2em;
+}
+.favList-headers{
+    color: rgb(207, 207, 207);
+    font-size: 22px;
+}
+
+.favList-data{
+    color: rgb(207, 207, 207);
+    font-size: 18px;
+}
+
+.favList-add-btn{
+    color: rgb(58, 58, 58);
+}
+
+.favList-remove-btn{
+    color: rgb(58, 58, 58);
+}

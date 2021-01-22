@@ -10,8 +10,10 @@ import { calUpdateCalc } from './helpers/calUpdateCalc';
 import NavBar from './NavBar';
 import TrackingChart from './TrackingChart';
 import { Input, InputGroup, Label } from 'reactstrap';
+import './Profile.css';
 
-
+  /** Displays user's current information, shows graph of weights/calories based on month/year paring,
+   *  allows user to change password/email or their current information **/
 const Profile = () =>{
 
     let dateToday = new Date()
@@ -24,18 +26,20 @@ const Profile = () =>{
     const [dateInfo, setDateInfo] = useState({monthNum: monthToday, 'year': yearToday});
 
     useEffect(()=> {
-
-        dispatch(getUserInfo(username));
-        dispatch(getChartInfo(username, dateInfo.monthNum, dateInfo.year));
-        dispatch(getRecommendations(username));
+        try {
+            dispatch(getUserInfo(username));
+            dispatch(getChartInfo(username, dateInfo.monthNum, dateInfo.year));
+            dispatch(getRecommendations(username));  
+        } catch (err) {
+            console.log(err)
+        }
     }, [dispatch, username, dateInfo])
 
-    let weightsArr = [];
-    let calsArr = [];
     let info = useSelector(store => store.info);
     let {user} = useSelector(store => store.user);
     let recommends = useSelector(store => store.recommendations);
 
+      /** Gets user weights from previous two weeks to determine changes to recommendations **/
     const getWeights = async(startDate, endDate) =>{
         let weights = await getWeightInfo(username, startDate, endDate);
         return weights;
@@ -47,42 +51,58 @@ const Profile = () =>{
     let newWeight;
 
     if(user.biweek_check_date){
+          /** Checks if it has been two weeks since the last weight change check returns the two dates
+           *  or false if it hasn't been two weeks **/
         let check = twoWeeksCheck(user.biweek_check_date, dateToday)
         if (check){
             setTimeout(async()=>{
+                /** If it has been two weeks get the weights in the date range in the form of an array **/
                 weightResp = await getWeights(check[1], check[0]);
                 if(weightResp){
+                    /** Calculates weight change per week from weight array **/
                     weeklyWeightChange = calChangeCheck(weightResp);
+                    /** Checks if calories need to be changed based on determined logic that uses weight change per week
+                     *  and current user goal. If weight change is too much returns BMR(L,G,M) string meaning user should
+                     *  re-enter their information for their BMR else returns suggested change in calories per day **/
                     let cal = changeCalLogic(calChangeCheck(weightResp), user.curr_goal);
+                    /** If weight change is too much redirects user to informational page on why they should update their
+                     *  BMR information **/
                     if(cal === 'BMRL'){
                         let today = Date();
                         today = today.slice(4,15);
                         setTimeout( async()=>{
-                            let resp = await updateCheckDate(username, today);
+                            await updateCheckDate(username, today);
                             history.push(`/user/${username}/infoBMR/${cal}`);
                         },0)
                     } else if(cal === 'BMRG'){
                         let today = Date();
                         today = today.slice(4,15);
                         setTimeout( async()=>{
-                            let resp = await updateCheckDate(username, today);
+                            await updateCheckDate(username, today);
                             history.push(`/user/${username}/infoBMR/${cal}`);
                         },0)
                     } else if(cal === 'BMRM'){
                         let today = Date();
                         today = today.slice(4,15);
                         setTimeout( async()=>{
-                            let resp = await updateCheckDate(username, today);
+                        await updateCheckDate(username, today);
                             history.push(`/user/${username}/infoBMR/${cal}`);
                         },0)
                     } else {
+                        /** If change in calories is returned calculate a new daily calorie total and updates
+                         *  current user weight based on weight change **/
                         if(recommends.cals){
                             newCalTotal = parseFloat(recommends.cals) + cal;    
                             newWeight = parseFloat(user.curr_weight) + (weeklyWeightChange * 2);
 
+                            /** Calculates new daily macro totals based on current goal, new daily calories total, 
+                             *  and new weight **/
                             let newMacros = calUpdateCalc(user.curr_goal, newCalTotal, newWeight);
     
                             setTimeout(async()=>{
+                                /** Updates recommendations, updates current user weight, 
+                                 *  sets the check date to two weeks from current date and
+                                 *  sends user to informational page about changes that happened**/
                                 let updateRecs = await updateRecommends(username, [newCalTotal, newMacros]);
                                 if(updateRecs.data){
                                     let weightCheck = await updateBiweekWeight(username, newWeight);
@@ -91,7 +111,7 @@ const Profile = () =>{
                                         thisDay = thisDay.slice(4,15);
                                         let resp = await updateCheckDate(username, thisDay);
                                         if(resp.biweek_check_date){
-                                            alert(`Recommended calories are updated every two weeks upon log in based on your weight change and goals. This time your new goals are ${newCalTotal} calories, ${newMacros.protein}g protein, ${newMacros.carbs}g carbs, ${newMacros.fats}g fat`)
+                                            history.push(`/user/${username}/update`);
                                         }
                                     }
                                 }
@@ -103,16 +123,7 @@ const Profile = () =>{
             }, 0);
         }
     }
-    
-   if(!info.info){
-        for(let i = 0; i < info[0][0].length; i++){
-            weightsArr.push(Number(info[0][0][i].user_weight));
-        }
-        for(let j = 0; j < info[0][1].length; j++){
-            calsArr.push(Number(info[0][1][j].user_cal));
-        }
-   }
-
+       
    const handleChange = e => {
     const {name, value} = e.target;
     
@@ -126,40 +137,40 @@ const Profile = () =>{
     return(
         <>
         <NavBar />
-        <div>
-            <h1>Profile</h1>
+        <div className='profile-info-div'>
+            <h1 className='profile-title'>Profile</h1>
             <div>
                 { user.username ?
             <>
-                    <Label className='label-user-info' htmlFor='username'>Username:</Label>
-                    <p className='user-info' name='username'>{user.username}</p>
-                    <Label className='label-user-info' htmlFor='date'>Joined on:</Label>
-                    <p className='user-info' name='date'>{user.date_joined.slice(5,10)+ '-' +user.date_joined.slice(0,4)}</p>
+                    <Label className='profile-label-user-info' htmlFor='username'>Username:</Label>
+                    <p className='profile-user-info' name='username'>{user.username}</p>
+                    <Label className='profile-label-user-info' htmlFor='date'>Joined on:</Label>
+                    <p className='profile-user-info' name='date'>{user.date_joined.slice(5,10)+ '-' +user.date_joined.slice(0,4)}</p>
+                    <Label className='profile-label-user-info' htmlFor='height'>Height:</Label>
+                    <p className='profile-user-info' name='height'>{user.curr_height}</p>
+                    <Label className='profile-label-user-info' htmlFor='weight'>Weight:</Label>
+                    <p className='profile-user-info' name='weight'>{user.curr_weight}</p>
+                    <Label className='profile-label-user-info' htmlFor='age'>Age:</Label>
+                    <p className='profile-user-info' name='age'>{user.curr_age}</p>
                     <br/>
-                    <Label className='label-user-info' htmlFor='height'>Height:</Label>
-                    <p className='user-info' name='height'>{user.curr_height}</p>
-                    <Label className='label-user-info' htmlFor='weight'>Weight:</Label>
-                    <p className='user-info' name='weight'>{user.curr_weight}</p>
-                    <Label className='label-user-info' htmlFor='age'>Age:</Label>
-                    <p className='user-info' name='age'>{user.curr_age}</p>
+                    <Label className='profile-label-user-info' htmlFor='activity'>Activity:</Label>
+                    <p className='profile-user-info' name='activity'>{user.curr_activity}</p>
+                    <Label className='profile-label-user-info' htmlFor='goal'>Goal:</Label>
+                    <p className='profile-user-info' name='goal'>{user.curr_goal}</p>
+                    <Label className='profile-label-user-info' htmlFor='experience'>Experience:</Label>
+                    <p className='profile-user-info' name='experience'>{user.curr_experience}</p>
                     <br/>
-                    <Label className='label-user-info' htmlFor='activity'>Activity:</Label>
-                    <p className='user-info' name='activity'>{user.curr_activity}</p>
-                    <Label className='label-user-info' htmlFor='goal'>Goal:</Label>
-                    <p className='user-info' name='goal'>{user.curr_goal}</p>
-                    <Label className='label-user-info' htmlFor='experience'>Experience:</Label>
-                    <p className='user-info' name='experience'>{user.curr_experience}</p>
-                    <Link to={`/user/${username}/editBMR`} >Edit Profile</Link>
+                    <Link className='profile-edit-link' to={`/user/${username}/editBMR`} >Edit Profile</Link>
                     {/* <Link to={`/user/${username}/prevfoods`} >Edit Old Foods</Link> */}
-                    <Link to={`/user/${username}/editinfo`}>Change Password/Email</Link>
+                    <Link className='profile-change-link' to={`/user/${username}/editinfo`}>Change Password/Email</Link>
                     </>
                     :
                     null}
             </div>
-
-            <InputGroup>
-            <Label htmlFor='monthNum'>Month</Label>
-            <Input type='select' name='monthNum' id='monthNum' onChange={handleChange} value={dateInfo.monthNum}>
+            <div className='profile-input-div col-md-6 col-lg-8 col-xl-8'>
+            <InputGroup className='profile-month-year-group'>
+            <Label className='profile-month-label' htmlFor='monthNum'>Month</Label>
+            <Input className='profile-month-input' type='select' name='monthNum' id='monthNum' onChange={handleChange} value={dateInfo.monthNum}>
                 <option value={1}>January</option>
                 <option value={2}>February</option>
                 <option value={3}>March</option>
@@ -173,19 +184,25 @@ const Profile = () =>{
                 <option value={11}>November</option>
                 <option value={12}>December</option>
             </Input>
-            <Label htmlFor='year'>Year</Label>
-            <Input type='select' name='year' id='year' onChange={handleChange} value={dateInfo.year}>
+            <Label className='profile-year-label' htmlFor='year'>Year</Label>
+            <Input className='profile-year-input' type='select' name='year' id='year' onChange={handleChange} value={dateInfo.year}>
             <option disabled value="" hidden>Choose an option...</option>
-                <option>2019</option>
                 <option>2020</option>
                 <option>2021</option>
                 <option>2022</option>
                 <option>2023</option>
                 <option>2024</option>
+                <option>2025</option>
+                <option>2026</option>
+                <option>2027</option>
+                <option>2028</option>
+                <option>2029</option>
+                <option>2030</option>
             </Input>
             </InputGroup>
-            {!info.info ? <TrackingChart weightsArr={!info.info ? weightsArr : []} calsArr={!info.info ? calsArr : []} />
-                       : null}
+            </div>
+            {!info.info ? <TrackingChart info={info} />
+                       : <h3 className='profile-noinfo'>No information yet</h3>}
             
         </div>
         </>

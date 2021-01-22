@@ -4,13 +4,16 @@ import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getUserInfo } from './actions';
 import { Button, Form, FormGroup, Label, Input, CustomInput, FormText, Modal,
-        ModalHeader, ModalBody, ModalFooter, Row, Col, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
+        ModalHeader, ModalBody, ModalFooter, Row, Col, InputGroup, InputGroupAddon,
+        InputGroupText, Fade, Alert } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfo } from '@fortawesome/free-solid-svg-icons';
 import NavBar from './NavBar';
+import './EditBMRForm.css';
 
 const DBAPI = 'http://localhost:5000'
 
+/** Form that allows user to update their current information such as goal, activity level, experience level **/
 const EditBMRForm = () => {
 
     // set empty initial state for the form, sets up useHistory
@@ -20,6 +23,7 @@ const EditBMRForm = () => {
     const [activeModal, setActiveModal] = useState(false);
     const [BMRModal, setBMRModal] = useState(false);
     const [unit, setUnit] = useState("metric");
+    const [error, setError] = useState(null);
     const {username} = useParams();
     const dispatch = useDispatch();
     const history = useHistory();
@@ -45,7 +49,7 @@ const EditBMRForm = () => {
     // setting unit with switch
     const changeUnit = (e) =>{
         if(unit === 'metric'){
-            setUnit('standard');
+            setUnit('imperial');
         } else {
             setUnit('metric');
         }
@@ -54,18 +58,28 @@ const EditBMRForm = () => {
     const toggleActivity = () => setActiveModal(!activeModal);
     const toggleBMR = () => setBMRModal(!BMRModal);
     
-    // on submit updates snacks/drinks in DB, then uses setDrinks/setSnacks depending on which is selected on form
+    /** Updates user's BMR if needs to be recalculated, handles invalid data entry **/
     const handleSubmit = async(e) => {
         e.preventDefault();
 
         let height;
 
-        if (unit === 'standard'){
+        if (unit === 'imperial'){
             height = Math.round(formData.curr_height * 2.54 * 2) / 2
         }
 
-        if(formData.curr_height === ""){
-            alert("Please enter a height")
+        if(formData.curr_height === "" || isNaN(parseFloat(formData.curr_height))){
+            setError('Please enter a valid height')
+        } else if(formData.curr_age === "" || isNaN(parseInt(formData.curr_age))){
+            setError("Please enter a valid age");
+        } else if(formData.curr_activity === ""){
+            setError("Please select your activity level");
+        } else if(formData.curr_goal === ""){
+            setError("Please select your goal");
+        } else if(formData.curr_experience === ""){
+            setError("Please select your experience level");
+        } else if(formData.gender === ""){
+            setError("Please select your gender");
         } else {
             await axios.patch(`${DBAPI}/user/${username}/BMR`,{
                 "curr_weight": user.curr_weight,
@@ -83,21 +97,25 @@ const EditBMRForm = () => {
             history.push(`/user/${username}/info`);
         }
 
+        setTimeout(()=>{
+            setError(null);
+        }, 2000);
     };
 
   return (
       <>
         <NavBar />
-    <div className='itemform col-md-4'>
-        <Form onSubmit={handleSubmit}>
-        <Row>
-        <h3>BMR Calculator </h3><Button onClick={toggleBMR}><FontAwesomeIcon  icon={faInfo} /></Button>
-        <CustomInput className="unit-switch" onClick={changeUnit} type="switch" id="exampleCustomSwitch" name="customSwitch" label={unit} />
+    <div className='editbmrForm-div col-md-4'>
+        <Form className='editbmrForm' onSubmit={handleSubmit}>
+        <Row className='editbmrForm-titleRow'>
+        <h3 className='editbmrForm-title'>BMR Calculator </h3>
+        <Button className='editbmrForm-bmr-btn' onClick={toggleBMR}><FontAwesomeIcon className='editbmrForm-icon' icon={faInfo}/></Button>
         </Row>
+        <CustomInput className="unit-switch editbmrForm-slider" onClick={changeUnit} type="switch" id="exampleCustomSwitch" name="customSwitch" label={unit} />
         <Row>
         <Col>
             <FormGroup>
-                <Label htmlFor="curr_weight">Weight</Label>
+                <Label className='editbmrForm-label' htmlFor="curr_weight">Weight</Label>
                 <InputGroup>
                 <Input disabled={true} autoFocus={true} type="text" name="curr_weight" id="curr_weight" onChange={handleChange} 
                 placeholder={user.curr_weight !== '0' ? user.curr_weight : 100}/>
@@ -111,7 +129,7 @@ const EditBMRForm = () => {
         </Col>
         <Col>
             <FormGroup>
-                <Label htmlFor="curr_height">Height</Label>
+                <Label className='editbmrForm-label' htmlFor="curr_height">Height</Label>
                 <InputGroup>
                 <Input type="text" name="curr_height" id="curr_height" onChange={handleChange} 
                 placeholder={user.curr_height !== '0' ? user.curr_height : 180} value={formData.curr_height}/>
@@ -125,7 +143,7 @@ const EditBMRForm = () => {
         </Col> 
         <Col>
             <FormGroup>
-                <Label htmlFor="curr_age">Age</Label>
+                <Label className='editbmrForm-label' htmlFor="curr_age">Age</Label>
                 <Input type="text" name="curr_age" id="curr_age" onChange={handleChange} placeholder={user.curr_age ? user.curr_age : 22} value={formData.curr_age} />
             </FormGroup>
         </Col> 
@@ -133,7 +151,7 @@ const EditBMRForm = () => {
         <Row>
         <Col>
             <FormGroup>
-                <Label htmlFor="curr_activity">Activity Level</Label>
+                <Label className='editbmrForm-label' htmlFor="curr_activity">Activity Level</Label>
                 <Input type="select" name="curr_activity" id="curr_activity" onChange={handleChange} value={formData.curr_activity}>
                 <option disabled value="" hidden>{user.curr_activity ? user.curr_activity : "Choose an option..."}</option>
                 <option>Sedentary</option>
@@ -142,14 +160,14 @@ const EditBMRForm = () => {
                 <option>Very Active</option>
                 <option>Extra Active</option>
                 </Input>
-                <FormText onClick={toggleActivity} color="muted">
+                <FormText className='editbmrForm-activity-info' onClick={toggleActivity}>
                     Click here for information on activity level
                 </FormText>
             </FormGroup>
         </Col> 
         <Col>
             <FormGroup>
-                <Label htmlFor="curr_goal">Goal</Label>
+                <Label className='editbmrForm-label' htmlFor="curr_goal">Goal</Label>
                 <Input type="select" name="curr_goal" id="curr_goal" onChange={handleChange} value={formData.curr_goal}>
                 <option disabled value="" hidden>{user.curr_goal ? user.curr_goal : "Choose an option..."}</option>
                 <option>Lose Weight</option>
@@ -162,7 +180,7 @@ const EditBMRForm = () => {
         <Row>
         <Col>
             <FormGroup>
-                <Label htmlFor="curr_experience">Experience</Label>
+                <Label className='editbmrForm-label' htmlFor="curr_experience">Experience</Label>
                 <Input type="select" name="curr_experience" id="curr_experience" onChange={handleChange} value={formData.curr_experience}>
                 <option disabled value="" hidden>{user.curr_experience ? user.curr_experience : "Choose an option..."}</option>
                 <option>Beginner</option>
@@ -173,7 +191,7 @@ const EditBMRForm = () => {
         </Col> 
         <Col>
             <FormGroup>
-                <Label htmlFor="gender">Gender</Label>
+                <Label className='editbmrForm-label' htmlFor="gender">Gender</Label>
                 <Input type="select" name="gender" id="gender" onChange={handleChange} value={formData.gender}>
                 <option disabled value="" hidden>{user.gender ? user.gender : "Choose an option..."}</option>
                 <option>Male</option>
@@ -182,11 +200,17 @@ const EditBMRForm = () => {
             </FormGroup>
         </Col> 
         </Row>
-        <Button>Calculate</Button>
+        <Button className='editbmrForm-btn'>Calculate</Button>
         </Form>
-        <Modal isOpen={activeModal} toggle={toggleActivity}>
-        <ModalHeader toggle={toggleActivity}>Activity Levels</ModalHeader>
-        <ModalBody>
+        <br/>
+        {error === null ? null : 
+        <Fade in={error}>
+            <Alert color='warning'>{error}</Alert>
+        </Fade>
+        }
+        <Modal className='modal-editbmr' isOpen={activeModal} toggle={toggleActivity}>
+        <ModalHeader className='modal-editbmr-title' toggle={toggleActivity}>Activity Levels</ModalHeader>
+        <ModalBody className='modal-editbmr-body'>
           <ol>
               <li><b>Sedentary</b>: Little to no exercise</li>
               <li><b>Lightly Active</b>: Light exercise 1-3 days a week</li>
@@ -195,18 +219,18 @@ const EditBMRForm = () => {
               <li><b>Extra Active</b>: Hard exercise 6-7 days a week (very physical job) </li>
           </ol>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className='modal-editbmr-footer'>
           <Button color="secondary" onClick={toggleActivity}>Okay</Button>
         </ModalFooter>
       </Modal>
-        <Modal isOpen={BMRModal} toggle={toggleBMR}>
-        <ModalHeader toggle={toggleBMR}>Basal Metabolic Rate (BMR)</ModalHeader>
-        <ModalBody>
+        <Modal className='modal-editbmr' isOpen={BMRModal} toggle={toggleBMR}>
+        <ModalHeader className='modal-editbmr-title' toggle={toggleBMR}>Basal Metabolic Rate (BMR)</ModalHeader>
+        <ModalBody className='modal-editbmr-body'>
           <p>
             This calcuation will give an estimate of the minimum number of calories your body requires for basic functions.
           </p>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className='modal-editbmr-footer'>
           <Button color="secondary" onClick={toggleBMR}>Okay</Button>
         </ModalFooter>
       </Modal>

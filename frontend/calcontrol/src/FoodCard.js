@@ -1,7 +1,10 @@
 import React from 'react';
+import {v4 as uuid} from 'uuid';
 import { useHistory, useParams } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardText, CardTitle, Button, Row, Col, Label} from 'reactstrap';
+import './FoodCard.css';
 
+/** Card shown after food search with information on the food in question **/
 const FoodCard = ({foods}) =>{
 
     const history = useHistory();
@@ -13,14 +16,13 @@ const FoodCard = ({foods}) =>{
     
     return (
         <>
-        <Row>
         {
             foods ?
             foods.map(food =>(
-        <Col md="3">
+        <Col key={uuid()} className='foodcard col-xs-12 col-md-5 col-lg-3'>
         <Card>
-            <CardHeader>{food.name} (per 100 grams)</CardHeader>
-                <CardBody>
+            <CardHeader className='foodcard-head'>{food.name} (per 100 grams)</CardHeader>
+                <CardBody className='foodcard-body'>
                     <Row>
                         <Label htmlFor='cals' tag="h5"><b>Calories:</b></Label>
                         <CardTitle name='cals' tag="h5">{food.calories}</CardTitle>
@@ -45,7 +47,6 @@ const FoodCard = ({foods}) =>{
             :
             null
         }
-        </Row>
         </>
     )
 }

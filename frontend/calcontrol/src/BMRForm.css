@@ -1,0 +1,86 @@
+.bmrForm-div{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bmrForm{
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgb(207, 207, 207);
+    border-radius: 5%;
+    padding: 10px;
+}
+
+.bmrForm-label{
+    color: rgb(207, 207, 207);
+    font-size: 25px;
+}
+
+.bmrForm-btn{
+    font-size: 18px;
+}
+
+.bmrForm-title{
+    color: rgb(207, 207, 207);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bmrForm-titleRow{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bmrForm-bmr-btn{
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+    color:rgb(207, 207, 207);
+    background-color:  rgb(58, 58, 58);
+    border-width: 1px;
+}
+
+.bmrForm-bmr-btn:hover{
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+    color:rgb(207, 207, 207);
+    background-color:  rgb(78, 78, 78);
+    border-width: 1px;
+}
+
+.bmrForm-icon{
+    margin-bottom: 2px;
+}
+
+.bmrForm-activity-info{
+    color:rgb(207, 207, 207) !important;
+}
+
+.bmrForm-activity-info:hover{
+    font-weight: bold;
+    cursor: default;
+}
+
+.bmrForm-slider{
+    color:rgb(207, 207, 207);
+}
+
+.modal-bmr{
+    background-color:rgb(58, 58, 58);
+    color:rgb(207, 207, 207);
+}
+
+.modal-bmr-title{
+    color: rgb(207, 207, 207);
+    background-color:rgb(58, 58, 58);
+}
+
+.modal-bmr-body{
+    background-color: rgb(78, 78, 78);
+}
+
+.modal-bmr-footer{
+    background-color: rgb(58, 58, 58);
+}

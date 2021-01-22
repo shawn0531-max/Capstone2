@@ -1,14 +1,22 @@
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
-import { deleteFoodInfo, getDateFood } from './actions';
+import { deleteFoodInfo, getDailyCals, getDateFood } from './actions';
 import { Table, Button } from 'reactstrap';
+import './TodayFoodList.css';
 
-const TodayFoodList = ({foods = undefined}, {cals}) =>{
+/** Table that displays food added by the user for the current day **/
+const TodayFoodList = ({foods = undefined}) =>{
 
     const dispatch = useDispatch();
     const history = useHistory();
     const {username} = useParams();
 
+    useEffect(()=>{
+        dispatch(getDailyCals(username));
+    }, [dispatch, username]);
+
+    let {cals} = useSelector(store => store.cals);
 
     const confirmDelete = (e) =>{
 
@@ -28,19 +36,19 @@ const TodayFoodList = ({foods = undefined}, {cals}) =>{
     const handleEdit = (e) =>{
         history.push(`/user/${username}/edit/${e.target.id}`)
     }
-
+    
     return(
         <Table>
         <thead>
             <tr key={0}>
             <th></th>
             <th></th>
-            <th>Food</th>
-            <th>Calories</th>
-            <th>Protein</th>
-            <th>Carbohydrates</th>
-            <th>Fat</th>
-            <th>amount</th>
+            <th className='foodlist-table-headers'>Food</th>
+            <th className='foodlist-table-headers'>Calories</th>
+            <th className='foodlist-table-headers'>Protein</th>
+            <th className='foodlist-table-headers'>Carbohydrates</th>
+            <th className='foodlist-table-headers'>Fat</th>
+            <th className='foodlist-table-headers'>Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -48,14 +56,14 @@ const TodayFoodList = ({foods = undefined}, {cals}) =>{
                 foods.map(food =>(
                     
                     <tr key={food.id}>
-                        <td><Button disabled={cals === null ? false : true} onClick={confirmDelete} id={food.id} >Remove</Button></td>   
-                        <td><Button disabled={cals === null ? false : true} onClick={handleEdit} id={food.id}>Edit</Button></td>    
-                        <th>{food.food}</th>
-                        <td>{food.cals}</td>
-                        <td>{food.protein}</td>
-                        <td>{food.carbs}</td>
-                        <td>{food.fat}</td>
-                        <td>{food.amount}</td>
+                        <td><Button className='foodlist-table-remove-btn' disabled={cals === undefined ? false : true} onClick={confirmDelete} id={food.id} color='danger'>Remove</Button></td>   
+                        <td><Button className='foodlist-table-edit-btn' disabled={cals === undefined ? false : true} onClick={handleEdit} id={food.id} color='light'>Edit</Button></td>    
+                        <th className='foodlist-table-data'>{food.food}</th>
+                        <td className='foodlist-table-data'>{food.cals}</td>
+                        <td className='foodlist-table-data'>{food.protein}</td>
+                        <td className='foodlist-table-data'>{food.carbs}</td>
+                        <td className='foodlist-table-data'>{food.fat}</td>
+                        <td className='foodlist-table-data'>{food.amount}</td>
                     </tr>
                     
                 ))

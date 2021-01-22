@@ -15,6 +15,7 @@ import FavFoods from './FavFoods';
 import EditBMRForm from './EditBMRForm';
 import DailyWeight from './DailyWeight';
 import JumboBMR from './JumboBMR';
+import UpdateInfo from './UpdateInfo';
 import './App.css';
 
 function App() {
@@ -47,6 +48,9 @@ function App() {
        </Route>
        <Route exact path="/user/:username/profile">
          <Profile />
+       </Route>
+       <Route exact path='/user/:username/update'>
+         <UpdateInfo />
        </Route>
        <Route exact path="/user/:username/prevfoods">
          <OldFoods />

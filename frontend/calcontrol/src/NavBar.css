@@ -1,0 +1,47 @@
+.NavLink {
+    color: rgb(215, 216, 173);
+    background-color: rgb(58, 58, 58);
+}
+
+.UncontrolledDropdown {
+    background-color: rgb(58, 58, 58);
+}
+div.dropdown-menu.dropdown-menu-right.show{
+    background-color: rgb(58, 58, 58);
+    color: rgb(207, 207, 207);
+}
+
+button.dropdown-item{
+    color: rgb(207, 207, 207);
+}
+button.dropdown-item:hover{
+    color: rgb(207, 207, 207);
+    background-color: rgb(58, 58, 58);
+}
+
+.nav-link{
+    color: rgb(207, 207, 207);
+}
+
+.nav-link:hover{
+    color: rgb(207, 207, 207);
+    font-weight: bold;
+}
+
+.nav-item {
+    color: rgb(207, 207, 207);
+}
+
+.navbar {
+    background-color:rgb(58, 58, 58);
+    color: rgb(207, 207, 207);
+}
+
+.navbar-brand {
+    color: rgb(207, 207, 207);
+}
+
+.navbar-brand:hover {
+    color: rgb(207, 207, 207);
+    font-weight: bold;
+}

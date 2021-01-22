@@ -1,0 +1,37 @@
+.infoCheck-div{
+    margin-top: 15%;
+    margin-bottom: auto;
+}
+
+.infoCheck-hr{
+    background-color: rgb(207, 207, 207);
+    width: 42%;
+    margin-top: 0;
+}
+
+.infoCheck-title{
+    color: rgb(207, 207, 207);
+}
+
+.infoCheck-label-user-info{
+    color: rgb(207, 207, 207);
+    margin-right: 5px;
+}
+
+.infoCheck-user-info{
+    color: rgb(207, 207, 207);
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.infoCheck-correct-btn{
+    background-color:  rgb(58, 58, 58);
+    margin-right: 1em;
+    font-size: 20px;
+}
+
+.infoCheck-edit-btn{
+    background-color:  rgb(58, 58, 58);
+    margin-left: 1em;
+    font-size: 20px;
+}

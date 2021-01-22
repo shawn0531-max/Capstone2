@@ -1,0 +1,17 @@
+.foodlist-table-headers{
+    color: rgb(207, 207, 207);
+    font-size: 22px;
+}
+
+.foodlist-table-data{
+    color: rgb(207, 207, 207);
+    font-size: 18px;
+}
+
+.foodlist-table-remove-btn{
+    color: rgb(58, 58, 58);
+}
+
+.foodlist-table-edit-btn{
+    color: rgb(58, 58, 58);
+}

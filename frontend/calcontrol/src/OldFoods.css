@@ -1,0 +1,31 @@
+.oldFoods-title{
+    color: rgb(207, 207, 207);
+}
+
+.oldFoods-label{
+    color: rgb(207, 207, 207);
+    font-size: 25px;
+}
+
+.oldFoods-input{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-size: 25px;
+}
+
+.oldFoods-search-btn{
+    margin-top: 1em;
+    margin-right: 10px;
+    color: rgb(58, 58, 58);
+    font-size: 20px;
+    margin-bottom: 2em;
+}
+
+.oldFoods-back-btn{
+    margin-left: 10px;
+    margin-top: 1em;
+    color: rgb(58, 58, 58);
+    font-size: 20px;
+    margin-bottom: 2em;
+}

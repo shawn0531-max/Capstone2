@@ -1,0 +1,23 @@
+.editFoodForm-div{
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.editFoodForm-title{
+    color: rgb(207, 207, 207);
+}
+
+.editFoodForm-label{
+    color: rgb(207, 207, 207);
+    font-size: 20px;
+}
+
+.editFoodForm-edit-btn{
+    margin-right: 1em;
+    font-size: 20px;
+}
+
+.editFoodForm-back-btn{
+    margin-left: 1em;
+    font-size: 20px;
+}

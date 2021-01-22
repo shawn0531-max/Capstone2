@@ -5,7 +5,9 @@ import TodayFoodList from './TodayFoodList';
 import { getDateFood } from './actions';
 import NavBar from './NavBar';
 import { Label, Input, Button } from 'reactstrap';
+import './OldFoods.css';
 
+/** Allows user to search for foods entered on specified date. User can then edit that information if they want **/
 const OldFoods = () =>{
 
     const {username} = useParams();
@@ -46,15 +48,15 @@ const OldFoods = () =>{
     return(
         <>
         <NavBar />
-        <h5>Enter the date of foods you want to edit</h5>
-        <Label htmlFor='month' >Month: </Label>
-        <Input type='text' name='month' placeholder={1} onChange={handleChange} value={month}></Input>
-        <Label htmlFor='day'>Day: </Label>
-        <Input type='text' name='day' placeholder={1} onChange={handleChange} value={day}></Input>
-        <Label htmlFor='year'>Year: </Label>
-        <Input type='text' name='year' placeholder={2021} onChange={handleChange} value={year}></Input>
-        <Button onClick={handleSearch}>Search</Button>
-        <Button onClick={handleBack}>Back</Button>
+        <h2 className='oldFoods-title'>Enter the date of foods you want to edit</h2>
+        <Label className='oldFoods-label' htmlFor='month' >Month</Label>
+        <Input className='oldFoods-input col-xs-10 col-md-4' type='text' name='month' placeholder={1} onChange={handleChange} value={month}></Input>
+        <Label className='oldFoods-label' htmlFor='day'>Day</Label>
+        <Input className='oldFoods-input col-xs-10 col-md-4' type='text' name='day' placeholder={1} onChange={handleChange} value={day}></Input>
+        <Label className='oldFoods-label' htmlFor='year'>Year</Label>
+        <Input className='oldFoods-input col-xs-10 col-md-4' type='text' name='year' placeholder={2021} onChange={handleChange} value={year}></Input>
+        <Button className='oldFoods-search-btn' onClick={handleSearch}>Search</Button>
+        <Button className='oldFoods-back-btn' onClick={handleBack}>Back</Button>
         {foods !== undefined && foods[0] ? <TodayFoodList foods={foods}/> : null}
     </>
     )

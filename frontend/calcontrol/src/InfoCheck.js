@@ -5,7 +5,9 @@ import { getUserInfo } from './actions';
 import { calCalc } from './helpers/calCalc';
 import { postRecommendations, getRecommendations, updateRecommends } from './actions';
 import { Spinner, Label, Button } from 'reactstrap';
+import './InfoCheck.css';
 
+/** Form that allows user to verify information entered for BMR calculation before continuing **/
 const InfoCheck = () =>{
 
     const dispatch = useDispatch();
@@ -42,38 +44,39 @@ const InfoCheck = () =>{
     }
 
     return(
-        <div>
+        <div className='infoCheck-div'>
         {!user.curr_bmr ? 
         <>
-        <Spinner className="text-default">
-        </Spinner>
+            <Spinner className="text-default">
+            </Spinner>
         </>
         :
         <>
-        <Label className='label-user-info' htmlFor='username'>Username:</Label>
-                    <p className='user-info' name='username'>{user.username}</p>
-                    <Label className='label-user-info' htmlFor='date'>Joined on:</Label>
-                    <p className='user-info' name='date'>{user.date_joined.slice(5,10)+ '-' +user.date_joined.slice(0,4)}</p>
-                    <br/>
-                    <Label className='label-user-info' htmlFor='height'>Height:</Label>
-                    <p className='user-info' name='height'>{user.curr_height}</p>
-                    <Label className='label-user-info' htmlFor='weight'>Weight:</Label>
-                    <p className='user-info' name='weight'>{user.curr_weight}</p>
-                    <Label className='label-user-info' htmlFor='age'>Age:</Label>
-                    <p className='user-info' name='age'>{user.curr_age}</p>
-                    <br/>
-                    <Label className='label-user-info' htmlFor='activity'>Activity:</Label>
-                    <p className='user-info' name='activity'>{user.curr_activity}</p>
-                    <Label className='label-user-info' htmlFor='goal'>Goal:</Label>
-                    <p className='user-info' name='goal'>{user.curr_goal}</p>
-                    <Label className='label-user-info' htmlFor='experience'>Experience:</Label>
-                    <p className='user-info' name='experience'>{user.curr_experience}</p>
-
-                    <h2>Is this information correct?</h2>
-                    <div>
-                        <Button onClick={handleCorrect}>Correct</Button>
-                        <Button onClick={handleEdit}>Edit</Button>
-                    </div>
+            <h1 className='infoCheck-title'>Is this information correct?</h1>
+            <hr className='infoCheck-hr'/>
+            <Label className='infoCheck-label-user-info' htmlFor='username'>Username:</Label>
+            <p className='infoCheck-user-info' name='username'>{user.username}</p>
+            <Label className='infoCheck-label-user-info' htmlFor='date'>Joined on:</Label>
+            <p className='infoCheck-user-info' name='date'>{user.date_joined.slice(5,10)+ '-' +user.date_joined.slice(0,4)}</p>
+            <br/>
+            <Label className='infoCheck-label-user-info' htmlFor='height'>Height:</Label>
+            <p className='infoCheck-user-info' name='height'>{user.curr_height}</p>
+            <Label className='infoCheck-label-user-info' htmlFor='weight'>Weight:</Label>
+            <p className='infoCheck-user-info' name='weight'>{user.curr_weight}</p>
+            <Label className='infoCheck-label-user-info' htmlFor='age'>Age:</Label>
+            <p className='infoCheck-user-info' name='age'>{user.curr_age}</p>
+            <br/>
+            <Label className='infoCheck-label-user-info' htmlFor='activity'>Activity:</Label>
+            <p className='infoCheck-user-info' name='activity'>{user.curr_activity}</p>
+            <Label className='infoCheck-label-user-info' htmlFor='goal'>Goal:</Label>
+            <p className='infoCheck-user-info' name='goal'>{user.curr_goal}</p>
+            <Label className='infoCheck-label-user-info' htmlFor='experience'>Experience:</Label>
+            <p className='infoCheck-user-info' name='experience'>{user.curr_experience}</p>
+            <div>
+                <br/>
+                <Button className='infoCheck-correct-btn' onClick={handleCorrect}>Correct</Button>
+                <Button className='infoCheck-edit-btn' onClick={handleEdit}>Edit</Button>
+            </div>
         </>
         }
         </div>

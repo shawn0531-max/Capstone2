@@ -3,20 +3,11 @@ import jwt from 'jsonwebtoken';
 import { getUserToken, userLogout } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, 
+         UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import './NavBar.css';
 
+/** Navigation bar that allows for quick site navigation **/
 const NavBar = () => {
 
   const dispatch = useDispatch();
@@ -49,8 +40,8 @@ const NavBar = () => {
 
   return (
     <div>
-      <Navbar color="light" light expand="md">
-        <NavbarBrand>reactstrap</NavbarBrand>
+      <Navbar expand="md">
+        <NavbarBrand href='/'>CalControl</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
@@ -75,7 +66,7 @@ const NavBar = () => {
               <DropdownToggle nav caret>
                 Register
               </DropdownToggle>
-              <DropdownMenu right>
+              <DropdownMenu color='rgb(215, 216, 173)' right>
                 <DropdownItem>
                     <NavLink href="/signup">Sign Up</NavLink>
                 </DropdownItem>
