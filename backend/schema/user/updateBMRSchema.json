@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "curr_weight": 75.5,
+            "curr_height": 180.1,
+            "curr_age": 25,
+            "curr_activity": "Moderately Active",
+            "curr_goal": "Gain Weight",
+            "curr_experience": "Beginner",
+            "gender": "female"
+        }
+    ],
+    "required": [
+        "curr_weight",
+        "curr_height",
+        "curr_age",
+        "curr_activity",
+        "curr_goal",
+        "curr_experience",
+        "gender"
+    ],
+    "properties": {
+        "curr_weight": {
+            "$id": "#/properties/curr_weight",
+            "type": "number",
+            "title": "The curr_weight schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+                75.5
+            ]
+        },
+        "curr_height": {
+            "$id": "#/properties/curr_height",
+            "type": "number",
+            "title": "The curr_height schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+                180.1
+            ]
+        },
+        "curr_age": {
+            "$id": "#/properties/curr_age",
+            "type": "integer",
+            "title": "The curr_age schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                25
+            ]
+        },
+        "curr_activity": {
+            "$id": "#/properties/curr_activity",
+            "type": "string",
+            "title": "The curr_activity schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Moderately Active"
+            ]
+        },
+        "curr_goal": {
+            "$id": "#/properties/curr_goal",
+            "type": "string",
+            "title": "The curr_goal schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Gain Weight"
+            ]
+        },
+        "curr_experience": {
+            "$id": "#/properties/curr_experience",
+            "type": "string",
+            "title": "The curr_experience schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Beginner"
+            ]
+        },
+        "gender": {
+            "$id": "#/properties/gender",
+            "type": "string",
+            "title": "The gender schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "female"
+            ]
+        }
+    },
+    "additionalProperties": true
+}

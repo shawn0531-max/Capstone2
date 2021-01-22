@@ -1,0 +1,77 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "food": "steak",
+            "cals": 268.5,
+            "protein": 15.5,
+            "carbs": 0.5,
+            "fat": 7.5
+        }
+    ],
+    "required": [
+        "food",
+        "cals",
+        "protein",
+        "carbs",
+        "fat"
+    ],
+    "properties": {
+        "food": {
+            "$id": "#/properties/food",
+            "type": "string",
+            "title": "The food schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "steak"
+            ]
+        },
+        "cals": {
+            "$id": "#/properties/cals",
+            "type": "number",
+            "title": "The cals schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+                268.5
+            ]
+        },
+        "protein": {
+            "$id": "#/properties/protein",
+            "type": "number",
+            "title": "The protein schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+                15.5
+            ]
+        },
+        "carbs": {
+            "$id": "#/properties/carbs",
+            "type": "number",
+            "title": "The carbs schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+                0.5
+            ]
+        },
+        "fat": {
+            "$id": "#/properties/fat",
+            "type": "number",
+            "title": "The fat schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+                7.5
+            ]
+        }
+    },
+    "additionalProperties": true
+}

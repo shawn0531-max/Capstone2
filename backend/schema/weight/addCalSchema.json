@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "cals": 1685.5,
+            "r_cals": 1750.5
+        }
+    ],
+    "required": [
+        "cals",
+        "r_cals"
+    ],
+    "properties": {
+        "cals": {
+            "$id": "#/properties/cals",
+            "type": "number",
+            "title": "The cals schema",
+            "description": "Calories eaten",
+            "default": 0.0,
+            "examples": [
+                1685.5
+            ]
+        },
+        "r_cals": {
+            "$id": "#/properties/r_cals",
+            "type": "number",
+            "title": "The r_cals schema",
+            "description": "Recommended calories",
+            "default": 0.0,
+            "examples": [
+                1750.5
+            ]
+        }
+    },
+    "additionalProperties": true
+}
